@@ -2,15 +2,11 @@ package com.pixima.libmvgoogleplay.handlers;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.webkit.JavascriptInterface;
 
-import com.google.android.gms.games.AnnotatedData;
 import com.google.android.gms.games.EventsClient;
 import com.google.android.gms.games.event.Event;
 import com.google.android.gms.games.event.EventBuffer;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,41 +24,40 @@ public class EventsHandler extends AbstractHandler<EventsClient> {
     }
 
     @JavascriptInterface
-    public void incrementEvent(String eventId, int stepAmount) {
+    public void incrementEvent(String eventId, long stepAmount) {
         if (mClient != null) {
-            mClient.increment(eventId, stepAmount);
+            mClient.increment(eventId, (int) stepAmount);
         }
     }
 
     @JavascriptInterface
     public String getAllEventDataAsJson() {
-        return !mEventsCache.isEmpty() ? gson.toJson(mEventsCache.values().toArray()) : null;
+        return !mEventsCache.isEmpty() ?
+                gson.toJson(mEventsCache.values().toArray())
+                : null;
     }
 
     public void cacheEvents(boolean forceReload) {
         mClient.load(forceReload)
-                .addOnCompleteListener(new OnCompleteListener<AnnotatedData<EventBuffer>>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AnnotatedData<EventBuffer>> task) {
-                        if (task.isSuccessful()) {
-                            try {
-                                EventBuffer eventBuffer = Objects.requireNonNull(task.getResult()).get();
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        try {
+                            EventBuffer eventBuffer = Objects.requireNonNull(task.getResult()).get();
 
-                                int buffSize = eventBuffer != null ? eventBuffer.getCount() : 0;
+                            int buffSize = eventBuffer != null ? eventBuffer.getCount() : 0;
 
-                                for (int i = 0; i < buffSize; i++) {
-                                    Event event = eventBuffer.get(i).freeze();
-                                    EventShell shell = new EventShell(event);
+                            for (int i = 0; i < buffSize; i++) {
+                                Event event = eventBuffer.get(i).freeze();
+                                EventShell shell = new EventShell(event);
 
-                                    mEventsCache.put(event.getEventId(), shell);
-                                }
-
-                                if (eventBuffer != null) {
-                                    eventBuffer.release();
-                                }
+                                mEventsCache.put(shell.id, shell);
                             }
-                            catch (NullPointerException ignored) {}
+
+                            if (eventBuffer != null) {
+                                eventBuffer.release();
+                            }
                         }
+                        catch (NullPointerException ignored) {}
                     }
                 });
     }

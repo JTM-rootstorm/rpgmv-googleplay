@@ -19,8 +19,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.pixima.libmvgoogleplay.handlers.AchievementsHandler;
 import com.pixima.libmvgoogleplay.handlers.EventsHandler;
 
@@ -33,7 +31,6 @@ public class GPlayMain {
 
     private GoogleSignInClient mGoogleSignInClient;
 
-    /* TODO: handlers */
     private AchievementsHandler mAchievementsHandler;
     private EventsHandler mEventsHandler;
 
@@ -108,30 +105,27 @@ public class GPlayMain {
 
     private void startSilentSignIn() {
         mGoogleSignInClient.silentSignIn().addOnCompleteListener(mParentActivity,
-                new OnCompleteListener<GoogleSignInAccount>() {
-            @Override
-            public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-                if (task.isSuccessful()) {
-                    GoogleSignInAccount signInAccount = task.getResult();
-                    onConnected(signInAccount);
-                }
-                else {
-                    ApiException exception = ((ApiException) task.getException());
-
-                    if (exception != null) {
-                        if (exception.getStatusCode() == CommonStatusCodes.SIGN_IN_REQUIRED) {
-                            startSilentSignIn();
-                        }
-                        else {
-                            handleErrorStatusCodes(exception.getStatusCode());
-                        }
+                task -> {
+                    if (task.isSuccessful()) {
+                        GoogleSignInAccount signInAccount = task.getResult();
+                        onConnected(signInAccount);
                     }
                     else {
-                        Log.e(INTERFACE_NAME, "Sign-in is really broken.");
+                        ApiException exception = ((ApiException) task.getException());
+
+                        if (exception != null) {
+                            if (exception.getStatusCode() == CommonStatusCodes.SIGN_IN_REQUIRED) {
+                                startSilentSignIn();
+                            }
+                            else {
+                                handleErrorStatusCodes(exception.getStatusCode());
+                            }
+                        }
+                        else {
+                            Log.e(INTERFACE_NAME, "Sign-in is really broken.");
+                        }
                     }
-                }
-            }
-        });
+                });
     }
 
     private void onConnected(GoogleSignInAccount googleSignInAccount) {

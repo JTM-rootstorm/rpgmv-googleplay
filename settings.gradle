@@ -1,1 +1,1 @@
-include ':libmvgoogleplay'
+include ':libmvgoogleplay', ':app'
