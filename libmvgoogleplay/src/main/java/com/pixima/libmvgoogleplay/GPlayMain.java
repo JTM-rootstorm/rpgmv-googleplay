@@ -139,11 +139,32 @@ public class GPlayMain {
             mAchievementsHandler.setClient(Games.getAchievementsClient(mParentActivity,
                     googleSignInAccount));
         }
+
+        if (BuildConfig.ENABLE_EVENTS) {
+            mEventsHandler.setClient(Games.getEventsClient(mParentActivity, googleSignInAccount));
+        }
+
+        if (firstStart) {
+            if (BuildConfig.ENABLE_EVENTS) {
+                mEventsHandler.cacheEvents(true);
+            }
+
+            firstStart = false;
+        }
+        else {
+            if (BuildConfig.ENABLE_EVENTS) {
+                mEventsHandler.cacheEvents(false);
+            }
+        }
     }
 
     private void onDisconnected() {
         if (BuildConfig.ENABLE_ACHIEVEMENTS) {
             mAchievementsHandler.setClient(null);
+        }
+
+        if (BuildConfig.ENABLE_EVENTS) {
+            mEventsHandler.setClient(null);
         }
     }
 
