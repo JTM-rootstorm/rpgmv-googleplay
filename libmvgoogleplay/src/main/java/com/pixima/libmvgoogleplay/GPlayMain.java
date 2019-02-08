@@ -34,6 +34,11 @@ public class GPlayMain {
     private AchievementsHandler mAchievementsHandler;
     private EventsHandler mEventsHandler;
 
+    private boolean enable_achievements = (R.bool.enable_achievements != 0);
+    private boolean enable_events = (R.bool.enable_events != 0);
+    private boolean enable_leaderboards = (R.bool.enable_leaderboards != 0);
+    private boolean enable_auto_signin = (R.bool.enable_auto_signin != 0);
+
     private boolean manualSignOut = false;
     private boolean firstStart = true;
 
@@ -55,12 +60,12 @@ public class GPlayMain {
 
         webView.addJavascriptInterface(this, INTERFACE_NAME);
 
-        if (BuildConfig.ENABLE_ACHIEVEMENTS) {
+        if (enable_achievements) {
             mAchievementsHandler = new AchievementsHandler(mParentActivity);
             webView.addJavascriptInterface(mAchievementsHandler, AchievementsHandler.INTERFACE_NAME);
         }
 
-        if (BuildConfig.ENABLE_EVENTS) {
+        if (enable_events) {
             mEventsHandler = new EventsHandler(mParentActivity);
             webView.addJavascriptInterface(mEventsHandler, EventsHandler.INTERFACE_NAME);
         }
@@ -87,13 +92,13 @@ public class GPlayMain {
     }
 
     public void onResume() {
-        if (!manualSignOut && BuildConfig.ENABLE_AUTO_SIGNIN) {
+        if (!manualSignOut && enable_auto_signin) {
             startSilentSignIn();
         }
     }
 
     public void onStart() {
-        if (!manualSignOut && BuildConfig.ENABLE_AUTO_SIGNIN) {
+        if (!manualSignOut && enable_auto_signin) {
             startInteractiveSignIn();
         }
     }
@@ -129,35 +134,35 @@ public class GPlayMain {
     }
 
     private void onConnected(GoogleSignInAccount googleSignInAccount) {
-        if (BuildConfig.ENABLE_ACHIEVEMENTS) {
+        if (enable_achievements) {
             mAchievementsHandler.setClient(Games.getAchievementsClient(mParentActivity,
                     googleSignInAccount));
         }
 
-        if (BuildConfig.ENABLE_EVENTS) {
+        if (enable_events) {
             mEventsHandler.setClient(Games.getEventsClient(mParentActivity, googleSignInAccount));
         }
 
         if (firstStart) {
-            if (BuildConfig.ENABLE_EVENTS) {
+            if (enable_events) {
                 mEventsHandler.cacheEvents(true);
             }
 
             firstStart = false;
         }
         else {
-            if (BuildConfig.ENABLE_EVENTS) {
+            if (enable_events) {
                 mEventsHandler.cacheEvents(false);
             }
         }
     }
 
     private void onDisconnected() {
-        if (BuildConfig.ENABLE_ACHIEVEMENTS) {
+        if (enable_achievements) {
             mAchievementsHandler.setClient(null);
         }
 
-        if (BuildConfig.ENABLE_EVENTS) {
+        if (enable_events) {
             mEventsHandler.setClient(null);
         }
     }
