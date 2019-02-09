@@ -19,7 +19,7 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 28
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -40,7 +40,13 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.google.android.gms:play-services-games:16.0.0'
-    implementation 'com.google.android.gms:play-services-auth:16.0.1'
+
+    implementation ('com.google.android.gms:play-services-games:16.0.0') {
+        exclude group: 'com.android.support'
+    }
+    implementation ('com.google.android.gms:play-services-auth:16.0.1') {
+        exclude group: 'com.android.support'
+    }
+
     implementation 'com.google.code.gson:gson:2.8.2'
 }
