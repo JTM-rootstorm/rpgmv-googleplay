@@ -28,4 +28,6 @@
         name specified</string>
     <string name="gplay_api_timeout">Timed out while waiting for result&#8230;</string>
     <string name="gplay_api_unspecified">An unspecified error has occurred&#8230; Error Code:</string>
+
+    <string name="gplay_see_saved_games">See My Saves</string>
 </resources>
