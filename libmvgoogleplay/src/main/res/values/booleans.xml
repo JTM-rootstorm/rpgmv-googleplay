@@ -1,0 +1,27 @@
+<!--
+    Copyright 2019 tehguy
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<resources>
+    <bool name="gplay_enable_achievements">true</bool>
+    <bool name="gplay_enable_events">false</bool>
+    <bool name="gplay_enable_leaderboards">false</bool>
+
+    <!-- toggle as per 1.1 from https://developers.google.com/games/services/checklist#1_sign-in
+         as you CANNOT have auto sign-in if children under 13 are an intended audience -->
+    <bool name="gplay_enable_auto_signin">false</bool>
+
+    <bool name="gplay_enable_cloud_save">false</bool>
+</resources>
