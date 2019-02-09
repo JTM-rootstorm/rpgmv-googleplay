@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package com.pixima.libmvgoogleplay.handlers;
+package com.pixima.libmvgoogleplay;
 
 import android.app.Activity;
 
@@ -32,7 +32,7 @@ abstract class AbstractHandler<T> {
         mParentActivity = activity;
     }
 
-    public void setClient(T serviceClient) {
+    void setClient(T serviceClient) {
         mClient = serviceClient;
     }
 }

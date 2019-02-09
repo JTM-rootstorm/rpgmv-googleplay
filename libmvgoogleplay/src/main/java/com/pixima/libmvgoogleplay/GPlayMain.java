@@ -35,8 +35,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.games.Games;
-import com.pixima.libmvgoogleplay.handlers.AchievementsHandler;
-import com.pixima.libmvgoogleplay.handlers.EventsHandler;
 
 public class GPlayMain {
     private static final String INTERFACE_NAME = "__google_play_main";
@@ -50,10 +48,10 @@ public class GPlayMain {
     private AchievementsHandler mAchievementsHandler;
     private EventsHandler mEventsHandler;
 
-    private boolean enable_achievements = (R.bool.enable_achievements != 0);
-    private boolean enable_events = (R.bool.enable_events != 0);
-    private boolean enable_leaderboards = (R.bool.enable_leaderboards != 0);
-    private boolean enable_auto_signin = (R.bool.enable_auto_signin != 0);
+    private boolean enable_achievements = (R.bool.gplay_enable_achievements != 0);
+    private boolean enable_events = (R.bool.gplay_enable_events != 0);
+    private boolean enable_leaderboards = (R.bool.gplay_enable_leaderboards != 0);
+    private boolean enable_auto_signin = (R.bool.gplay_enable_auto_signin != 0);
 
     private boolean manualSignOut = false;
     private boolean firstStart = true;
@@ -63,7 +61,7 @@ public class GPlayMain {
 
         String val = mParentActivity.getString(R.string.app_id);
 
-        if (val.startsWith("YOUR_")) {
+        if (val.contains("YOUR_") || val.isEmpty()) {
             Log.d(INTERFACE_NAME, "The APP_ID in ids.xml for this app has not been set, " +
                     "Google Play Services will not be initialized");
         }
@@ -119,6 +117,7 @@ public class GPlayMain {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     @JavascriptInterface
     public void startInteractiveSignIn() {
         mParentActivity.startActivityForResult(mGoogleSignInClient.getSignInIntent(), RC_SIGN_IN);
@@ -188,31 +187,31 @@ public class GPlayMain {
 
         switch (statusCode) {
             case CommonStatusCodes.API_NOT_CONNECTED:
-                message = mParentActivity.getString(R.string.api_not_connected);
+                message = mParentActivity.getString(R.string.gplay_api_not_connected);
                 break;
             case CommonStatusCodes.CANCELED:
-                message = mParentActivity.getString(R.string.api_cancelled);
+                message = mParentActivity.getString(R.string.gplay_api_cancelled);
                 break;
             case CommonStatusCodes.DEVELOPER_ERROR:
-                message = mParentActivity.getString(R.string.api_misconfigured);
+                message = mParentActivity.getString(R.string.gplay_api_misconfigured);
                 break;
             case CommonStatusCodes.ERROR:
-                message = mParentActivity.getString(R.string.api_error);
+                message = mParentActivity.getString(R.string.gplay_api_error);
                 break;
             case CommonStatusCodes.INTERNAL_ERROR: case CommonStatusCodes.NETWORK_ERROR:
-                message = mParentActivity.getString(R.string.api_internal_network_error);
+                message = mParentActivity.getString(R.string.gplay_api_internal_network_error);
                 break;
             case CommonStatusCodes.INVALID_ACCOUNT:
-                message = mParentActivity.getString(R.string.api_invalid_account);
+                message = mParentActivity.getString(R.string.gplay_api_invalid_account);
                 break;
             case CommonStatusCodes.TIMEOUT:
-                message = mParentActivity.getString(R.string.api_timeout);
+                message = mParentActivity.getString(R.string.gplay_api_timeout);
                 break;
             case GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS:
                 // we ignore this one
                 return;
             default:
-                message = mParentActivity.getString(R.string.api_unspecified) + statusCode;
+                message = mParentActivity.getString(R.string.gplay_api_unspecified) + statusCode;
                 break;
         }
 

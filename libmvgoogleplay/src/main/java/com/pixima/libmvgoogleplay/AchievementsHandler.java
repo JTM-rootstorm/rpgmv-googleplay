@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package com.pixima.libmvgoogleplay.handlers;
+package com.pixima.libmvgoogleplay;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -29,14 +29,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class AchievementsHandler extends AbstractHandler<AchievementsClient> {
-    public static final String INTERFACE_NAME = "__google_play_achievements";
+class AchievementsHandler extends AbstractHandler<AchievementsClient> {
+    static final String INTERFACE_NAME = "__google_play_achievements";
 
     private static final int RC_ACHIEVEMENT_UI = 9003;
 
     private Map<String, AchievementShell> mAchievementCache;
 
-    public AchievementsHandler(Activity activity) {
+    AchievementsHandler(Activity activity) {
         super(activity);
 
         mAchievementCache = new HashMap<>();
@@ -72,7 +72,7 @@ public class AchievementsHandler extends AbstractHandler<AchievementsClient> {
                 : null;
     }
 
-    public void cacheAchievements(boolean forceReload) {
+    void cacheAchievements(boolean forceReload) {
         mClient.load(forceReload)
                 .addOnCompleteListener(task -> {
                     try {

@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package com.pixima.libmvgoogleplay.handlers;
+package com.pixima.libmvgoogleplay;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -28,12 +28,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class EventsHandler extends AbstractHandler<EventsClient> {
-    public static final String INTERFACE_NAME = "__google_play_events";
+class EventsHandler extends AbstractHandler<EventsClient> {
+    static final String INTERFACE_NAME = "__google_play_events";
 
     private Map<String, EventShell> mEventsCache;
 
-    public EventsHandler(Activity activity) {
+    EventsHandler(Activity activity) {
         super(activity);
 
         mEventsCache = new HashMap<>();
@@ -53,7 +53,7 @@ public class EventsHandler extends AbstractHandler<EventsClient> {
                 : null;
     }
 
-    public void cacheEvents(boolean forceReload) {
+    void cacheEvents(boolean forceReload) {
         mClient.load(forceReload)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

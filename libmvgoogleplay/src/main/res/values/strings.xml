@@ -16,24 +16,24 @@
 
 <resources>
     <string name="app_name">libmvgoogleplay</string>
-    <string name="api_not_connected">"The client attempted to call a method from an API that failed
+    <string name="gplay_api_not_connected">"The client attempted to call a method from an API that failed
         to connect.</string>
-    <string name="api_cancelled">Result cancelled due to disconnect</string>
-    <string name="api_misconfigured">This app is misconfigured. Have the dev take a look at the
+    <string name="gplay_api_cancelled">Result cancelled due to disconnect</string>
+    <string name="gplay_api_misconfigured">This app is misconfigured. Have the dev take a look at the
         logs on their end, specifically their Google Play stuff</string>
-    <string name="api_error">Operation failed with no detailed information</string>
-    <string name="api_internal_network_error">An internal/network error occurred.
+    <string name="gplay_api_error">Operation failed with no detailed information</string>
+    <string name="gplay_api_internal_network_error">An internal/network error occurred.
         Retrying should fix things</string>
-    <string name="api_invalid_account">Client attempted to connect with an invalid account
+    <string name="gplay_api_invalid_account">Client attempted to connect with an invalid account
         name specified</string>
-    <string name="api_timeout">Timed out while waiting for result&#8230;</string>
-    <string name="api_unspecified">An unspecified error has occurred&#8230; Error Code:</string>
+    <string name="gplay_api_timeout">Timed out while waiting for result&#8230;</string>
+    <string name="gplay_api_unspecified">An unspecified error has occurred&#8230; Error Code:</string>
 
-    <bool name="enable_achievements">true</bool>
-    <bool name="enable_events">false</bool>
-    <bool name="enable_leaderboards">false</bool>
+    <bool name="gplay_enable_achievements">true</bool>
+    <bool name="gplay_enable_events">false</bool>
+    <bool name="gplay_enable_leaderboards">false</bool>
 
     <!-- toggle as per 1.1 from https://developers.google.com/games/services/checklist#1_sign-in
          as you CANNOT have auto sign-in if children under 13 are an intended audience -->
-    <bool name="enable_auto_signin">false</bool>
+    <bool name="gplay_enable_auto_signin">false</bool>
 </resources>
