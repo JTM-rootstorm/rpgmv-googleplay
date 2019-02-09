@@ -25,7 +25,9 @@ import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.achievement.Achievement;
 import com.google.android.gms.games.achievement.AchievementBuffer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -35,11 +37,13 @@ class AchievementsHandler extends AbstractHandler<AchievementsClient> {
     private static final int RC_ACHIEVEMENT_UI = 9003;
 
     private Map<String, AchievementShell> mAchievementCache;
+    private List<String> mUnlockQueue;
 
     AchievementsHandler(Activity activity) {
         super(activity);
 
         mAchievementCache = new HashMap<>();
+        mUnlockQueue = new ArrayList<>();
     }
 
     @JavascriptInterface
@@ -51,34 +55,72 @@ class AchievementsHandler extends AbstractHandler<AchievementsClient> {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     @JavascriptInterface
-    public void unlockAchievement(String achievementId) {
+    public void unlockAchievement(@NonNull String achievementId) {
         if (mClient != null) {
             mClient.unlock(achievementId);
         }
-    }
 
-    @JavascriptInterface
-    public void incrementAchievementStep(String achievementId, int stepAmount) {
-        if (mClient != null) {
-            mClient.increment(achievementId, stepAmount);
+        if (!mAchievementCache.isEmpty()) {
+            AchievementShell shell = mAchievementCache.get(achievementId);
+
+            if (shell == null) return;
+            if (shell.state == Achievement.STATE_UNLOCKED) return;
+
+            shell.state = Achievement.STATE_UNLOCKED;
+
+            mUnlockQueue.add(shell.id);
+            mAchievementCache.put(achievementId, shell);
         }
     }
 
     @JavascriptInterface
-    public String getAllAchievementDataAsJSON() {
+    public void incrementAchievementStep(@NonNull String achievementId, @NonNull Integer stepAmount) {
+        if (mClient != null) {
+            mClient.increment(achievementId, stepAmount);
+        }
+
+        if (!mAchievementCache.isEmpty()) {
+            AchievementShell shell = mAchievementCache.get(achievementId);
+
+            if (shell == null) return;
+            if (shell.type != Achievement.TYPE_INCREMENTAL
+                    && shell.state == Achievement.STATE_UNLOCKED) return;
+
+            shell.currentSteps += stepAmount;
+
+            mAchievementCache.put(achievementId, shell);
+
+            if (shell.currentSteps >= shell.stepsToUnlock) {
+                unlockAchievement(achievementId);
+            }
+        }
+    }
+
+    @JavascriptInterface
+    public String getAllAchievementDataAsJson() {
         return !mAchievementCache.isEmpty() ?
                 gson.toJson(mAchievementCache.values().toArray())
+                : null;
+    }
+
+    @JavascriptInterface
+    public String getAchievementDataAsJson(@NonNull String achievementId) {
+        return !mAchievementCache.isEmpty() ?
+                gson.toJson(mAchievementCache.get(achievementId))
                 : null;
     }
 
     void cacheAchievements(boolean forceReload) {
         mClient.load(forceReload)
                 .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) return;
+
                     try {
                         AchievementBuffer achievementBuffer = Objects.requireNonNull(task.getResult()).get();
 
-                        int buffSize = Objects.requireNonNull(achievementBuffer).getCount();
+                        int buffSize = achievementBuffer != null ? achievementBuffer.getCount() : 0;
 
                         for (int i = 0; i < buffSize; i++){
                             Achievement achievement = achievementBuffer.get(i).freeze();
@@ -87,10 +129,22 @@ class AchievementsHandler extends AbstractHandler<AchievementsClient> {
                             mAchievementCache.put(achievementShell.id, achievementShell);
                         }
 
-                        achievementBuffer.release();
+                        if (achievementBuffer != null) {
+                            achievementBuffer.release();
+                        }
                     }
                     catch (NullPointerException ignored) {}
                 });
+    }
+
+    void unlockCachedAchievements() {
+        if (mUnlockQueue.isEmpty()) return;
+
+        for (String achievementId : mUnlockQueue) {
+            unlockAchievement(achievementId);
+        }
+
+        mUnlockQueue.clear();
     }
 
     private static class AchievementShell {

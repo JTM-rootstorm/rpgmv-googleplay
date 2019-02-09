@@ -54,7 +54,7 @@ public class GPlayMain {
     private boolean enable_auto_signin = (R.bool.gplay_enable_auto_signin != 0);
 
     private boolean manualSignOut = false;
-    private boolean firstStart = true;
+    private boolean isFirstStart = true;
 
     public GPlayMain(@NonNull Context context, @NonNull WebView webView) {
         mParentActivity = ((Activity) context);
@@ -152,23 +152,18 @@ public class GPlayMain {
         if (enable_achievements) {
             mAchievementsHandler.setClient(Games.getAchievementsClient(mParentActivity,
                     googleSignInAccount));
+            mAchievementsHandler.unlockCachedAchievements();
+            mAchievementsHandler.cacheAchievements(isFirstStart);
         }
 
         if (enable_events) {
             mEventsHandler.setClient(Games.getEventsClient(mParentActivity, googleSignInAccount));
+            mEventsHandler.incrementCachedEvents();
+            mEventsHandler.cacheEvents(isFirstStart);
         }
 
-        if (firstStart) {
-            if (enable_events) {
-                mEventsHandler.cacheEvents(true);
-            }
-
-            firstStart = false;
-        }
-        else {
-            if (enable_events) {
-                mEventsHandler.cacheEvents(false);
-            }
+        if (isFirstStart) {
+            isFirstStart = false;
         }
     }
 

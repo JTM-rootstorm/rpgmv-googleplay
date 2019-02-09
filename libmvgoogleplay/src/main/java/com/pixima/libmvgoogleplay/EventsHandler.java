@@ -18,6 +18,7 @@ package com.pixima.libmvgoogleplay;
 
 import android.app.Activity;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.webkit.JavascriptInterface;
 
 import com.google.android.gms.games.EventsClient;
@@ -32,17 +33,38 @@ class EventsHandler extends AbstractHandler<EventsClient> {
     static final String INTERFACE_NAME = "__google_play_events";
 
     private Map<String, EventShell> mEventsCache;
+    private Map<String, Long> mOfflineEventCache;
 
     EventsHandler(Activity activity) {
         super(activity);
 
         mEventsCache = new HashMap<>();
+        mOfflineEventCache = new HashMap<>();
     }
 
+    @SuppressWarnings("WeakerAccess")
     @JavascriptInterface
-    public void incrementEvent(String eventId, long stepAmount) {
+    public void incrementEvent(@NonNull String eventId, @NonNull Long stepAmount) {
         if (mClient != null) {
-            mClient.increment(eventId, (int) stepAmount);
+            mClient.increment(eventId, stepAmount.intValue());
+        }
+
+        if (!mEventsCache.isEmpty()) {
+            EventShell shell = mEventsCache.get(eventId);
+
+            if (shell == null) return;
+
+            shell.val += stepAmount;
+            mEventsCache.put(eventId, shell);
+
+            Long offlineStep = mOfflineEventCache.get(eventId);
+
+            if (offlineStep != null) {
+                mOfflineEventCache.put(eventId, offlineStep + stepAmount);
+            }
+            else {
+                mOfflineEventCache.put(eventId, stepAmount);
+            }
         }
     }
 
@@ -53,29 +75,46 @@ class EventsHandler extends AbstractHandler<EventsClient> {
                 : null;
     }
 
+    @JavascriptInterface
+    public String getEventDataAsJson(@NonNull String eventId) {
+        return !mEventsCache.isEmpty() ?
+                gson.toJson(mEventsCache.get(eventId))
+                : null;
+    }
+
     void cacheEvents(boolean forceReload) {
         mClient.load(forceReload)
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        try {
-                            EventBuffer eventBuffer = Objects.requireNonNull(task.getResult()).get();
+                    if (!task.isSuccessful()) return;
 
-                            int buffSize = eventBuffer != null ? eventBuffer.getCount() : 0;
+                    try {
+                        EventBuffer eventBuffer = Objects.requireNonNull(task.getResult()).get();
 
-                            for (int i = 0; i < buffSize; i++) {
-                                Event event = eventBuffer.get(i).freeze();
-                                EventShell shell = new EventShell(event);
+                        int buffSize = eventBuffer != null ? eventBuffer.getCount() : 0;
 
-                                mEventsCache.put(shell.id, shell);
-                            }
+                        for (int i = 0; i < buffSize; i++) {
+                            Event event = eventBuffer.get(i).freeze();
+                            EventShell shell = new EventShell(event);
 
-                            if (eventBuffer != null) {
-                                eventBuffer.release();
-                            }
+                            mEventsCache.put(shell.id, shell);
                         }
-                        catch (NullPointerException ignored) {}
+
+                        if (eventBuffer != null) {
+                            eventBuffer.release();
+                        }
                     }
+                    catch (NullPointerException ignored) {}
                 });
+    }
+
+    void incrementCachedEvents() {
+        if (mOfflineEventCache.isEmpty()) return;
+
+        for (Map.Entry<String, Long> entry : mOfflineEventCache.entrySet()) {
+            incrementEvent(entry.getKey(), entry.getValue());
+        }
+
+        mOfflineEventCache.clear();
     }
 
     private static class EventShell {
