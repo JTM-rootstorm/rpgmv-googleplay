@@ -76,7 +76,7 @@ class AchievementsHandler extends AbstractHandler<AchievementsClient> {
     }
 
     @JavascriptInterface
-    public void incrementAchievementStep(@NonNull String achievementId, @NonNull Integer stepAmount) {
+    public void incrementAchievementStep(String achievementId, int stepAmount) {
         if (mClient != null) {
             mClient.increment(achievementId, stepAmount);
         }
@@ -106,7 +106,7 @@ class AchievementsHandler extends AbstractHandler<AchievementsClient> {
     }
 
     @JavascriptInterface
-    public String getAchievementDataAsJson(@NonNull String achievementId) {
+    public String getAchievementDataAsJson(String achievementId) {
         return !mAchievementCache.isEmpty() ?
                 gson.toJson(mAchievementCache.get(achievementId))
                 : null;

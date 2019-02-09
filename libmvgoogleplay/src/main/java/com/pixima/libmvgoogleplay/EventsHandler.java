@@ -76,7 +76,7 @@ class EventsHandler extends AbstractHandler<EventsClient> {
     }
 
     @JavascriptInterface
-    public String getEventDataAsJson(@NonNull String eventId) {
+    public String getEventDataAsJson(String eventId) {
         return !mEventsCache.isEmpty() ?
                 gson.toJson(mEventsCache.get(eventId))
                 : null;
@@ -125,7 +125,7 @@ class EventsHandler extends AbstractHandler<EventsClient> {
         Uri imageUri;
         long val;
 
-        EventShell(Event event) {
+        EventShell(@NonNull Event event) {
             id = event.getEventId();
             name = event.getName();
             desc = event.getDescription();

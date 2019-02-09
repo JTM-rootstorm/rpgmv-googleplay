@@ -39,7 +39,7 @@ import com.google.android.gms.games.Games;
 public class GPlayMain {
     private static final String INTERFACE_NAME = "__google_play_main";
 
-    private static int RC_SIGN_IN = 9001;
+    private static final int RC_SIGN_IN = 9001;
 
     private Activity mParentActivity;
 
@@ -47,6 +47,7 @@ public class GPlayMain {
 
     private AchievementsHandler mAchievementsHandler;
     private EventsHandler mEventsHandler;
+    private LeaderboardsHandler mLeaderboardsHandler;
 
     private boolean enable_achievements = (R.bool.gplay_enable_achievements != 0);
     private boolean enable_events = (R.bool.gplay_enable_events != 0);
@@ -82,6 +83,11 @@ public class GPlayMain {
         if (enable_events) {
             mEventsHandler = new EventsHandler(mParentActivity);
             webView.addJavascriptInterface(mEventsHandler, EventsHandler.INTERFACE_NAME);
+        }
+
+        if (enable_leaderboards) {
+            mLeaderboardsHandler = new LeaderboardsHandler(mParentActivity);
+            webView.addJavascriptInterface(mLeaderboardsHandler, LeaderboardsHandler.INTERFACE_NAME);
         }
     }
 
@@ -123,6 +129,22 @@ public class GPlayMain {
         mParentActivity.startActivityForResult(mGoogleSignInClient.getSignInIntent(), RC_SIGN_IN);
     }
 
+    @JavascriptInterface
+    public void signOut() {
+        if (!isSignedIn()) return;
+
+        mGoogleSignInClient.signOut().addOnCompleteListener(mParentActivity,
+                task -> onDisconnected());
+
+        manualSignOut = true;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    @JavascriptInterface
+    public boolean isSignedIn() {
+        return GoogleSignIn.getLastSignedInAccount(mParentActivity) != null;
+    }
+
     private void startSilentSignIn() {
         mGoogleSignInClient.silentSignIn().addOnCompleteListener(mParentActivity,
                 task -> {
@@ -162,6 +184,11 @@ public class GPlayMain {
             mEventsHandler.cacheEvents(isFirstStart);
         }
 
+        if (enable_leaderboards) {
+            mLeaderboardsHandler.setClient(Games.getLeaderboardsClient(mParentActivity,
+                    googleSignInAccount));
+        }
+
         if (isFirstStart) {
             isFirstStart = false;
         }
@@ -174,6 +201,10 @@ public class GPlayMain {
 
         if (enable_events) {
             mEventsHandler.setClient(null);
+        }
+
+        if (enable_leaderboards) {
+            mLeaderboardsHandler.setClient(null);
         }
     }
 
