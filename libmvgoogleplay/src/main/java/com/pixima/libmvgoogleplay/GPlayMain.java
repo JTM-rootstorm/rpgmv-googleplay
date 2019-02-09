@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
@@ -49,16 +50,23 @@ public class GPlayMain {
     private EventsHandler mEventsHandler;
     private LeaderboardsHandler mLeaderboardsHandler;
 
-    private boolean enable_achievements = (R.bool.gplay_enable_achievements != 0);
-    private boolean enable_events = (R.bool.gplay_enable_events != 0);
-    private boolean enable_leaderboards = (R.bool.gplay_enable_leaderboards != 0);
-    private boolean enable_auto_signin = (R.bool.gplay_enable_auto_signin != 0);
+    private boolean enable_achievements;
+    private boolean enable_events;
+    private boolean enable_leaderboards;
+    private boolean enable_auto_signin;
 
     private boolean manualSignOut = false;
     private boolean isFirstStart = true;
 
     public GPlayMain(@NonNull Context context, @NonNull WebView webView) {
         mParentActivity = ((Activity) context);
+
+        Resources res = mParentActivity.getResources();
+
+        enable_achievements = res.getBoolean(R.bool.gplay_enable_achievements);
+        enable_events = res.getBoolean(R.bool.gplay_enable_events);
+        enable_leaderboards = res.getBoolean(R.bool.gplay_enable_leaderboards);
+        enable_auto_signin = res.getBoolean(R.bool.gplay_enable_auto_signin);
 
         String val = mParentActivity.getString(R.string.app_id);
 
