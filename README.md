@@ -4,7 +4,12 @@ This library aims to serve as an easy-to-use access point for Google Play servic
 
 ## How to get the library
 
-Either compile the library yourself by cloning the master branch, or grab a pre-compiled version from [the releases page](https://github.com/tehguy/MV-GooglePlay/releases)
+Either compile the library yourself by cloning the master branch, grab a pre-compiled version from [the releases page](https://github.com/tehguy/MV-GooglePlay/releases),
+or add
+``` 
+implementation 'com.pixima.rpgmv:rpgmv-googleplay:<version>'
+```
+to your project's build.grade (assuming you have jcenter in your repository). Replace \<version\> with whichever version you prefer from [the releases page](https://github.com/tehguy/MV-GooglePlay/releases)
 
 ## How to use the library
 
