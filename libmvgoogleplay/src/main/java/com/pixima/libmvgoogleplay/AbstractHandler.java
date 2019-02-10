@@ -26,7 +26,7 @@ abstract class AbstractHandler<T> {
 
     T mClient = null;
 
-    static Gson gson = new GsonBuilder().serializeNulls().create();
+    static final Gson gson = new GsonBuilder().serializeNulls().create();
 
     AbstractHandler(Activity activity) {
         mParentActivity = activity;
