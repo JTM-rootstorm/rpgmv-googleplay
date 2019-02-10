@@ -14,22 +14,7 @@
    limitations under the License.
 */
 
-apply plugin: 'com.novoda.bintray-release'
 apply plugin: 'com.android.library'
-
-publish {
-    def groupProjectID = 'com.pixima.rpgmv'
-    def artifactProjectID = 'rpgmv-googleplay'
-    def publishVersionID = '1.0-alpha'
-
-    userOrg = 'tehguy'
-    repoName = 'rpgmv'
-    groupId = groupProjectID
-    artifactId = artifactProjectID
-    publishVersion = publishVersionID
-    desc = 'Android library for provided Google Play access to RPG Maker MV'
-    website = 'https://gitlab.com/tehguy/mv-googleplay'
-}
 
 android {
     compileSdkVersion 28
@@ -65,3 +50,5 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.2'
 }
+
+apply from: '../bintray-script.gradle'
