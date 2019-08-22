@@ -2,9 +2,10 @@ package com.pixima.libmvgoogleplay;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.webkit.WebView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 final class BitmapHelper {
     private static BitmapHelper INSTANCE;
@@ -19,7 +20,8 @@ final class BitmapHelper {
         return INSTANCE;
     }
 
-    @Nullable Bitmap screenshot(@NonNull WebView webView) {
+    @Nullable
+    Bitmap screenshot(@NonNull WebView webView) {
         try {
             Bitmap bitmap = Bitmap.createBitmap(webView.getWidth(), webView.getHeight(),
                     Bitmap.Config.ARGB_8888);
