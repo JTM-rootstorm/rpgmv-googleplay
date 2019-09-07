@@ -105,6 +105,7 @@ public class GPlayMain {
     }
 
     public void OnActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!isGooglePlayServicesAvailable(mParentActivity)) return;
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
