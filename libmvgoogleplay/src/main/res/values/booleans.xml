@@ -15,7 +15,7 @@
 -->
 
 <resources>
-    <bool name="gplay_enable_achievements">true</bool>
+    <bool name="gplay_enable_achievements">false</bool>
     <bool name="gplay_enable_events">false</bool>
     <bool name="gplay_enable_leaderboards">false</bool>
 

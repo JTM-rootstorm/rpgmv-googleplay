@@ -16,6 +16,7 @@
 
 package com.pixima.libmvgoogleplay;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -61,6 +62,7 @@ public class GPlayMain {
     private boolean manualSignOut = false;
     private boolean isFirstStart = true;
 
+    @SuppressLint("AddJavascriptInterface")
     public GPlayMain(@NonNull Context context, @NonNull WebView webView) {
         mParentActivity = ((Activity) context);
 
