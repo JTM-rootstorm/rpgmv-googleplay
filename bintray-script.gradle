@@ -30,7 +30,7 @@ ext {
     siteUrl = 'https://gitlab.com/tehguy/mv-googleplay'
     gitUrl = 'https://gitlab.com/tehguy/mv-googleplay.git'
 
-    libraryVersion = '1.0-alpha'
+    libraryVersion = '1.0.3-alpha'
 
     developerId = 'tehguy'
     developerName = 'Michael J'

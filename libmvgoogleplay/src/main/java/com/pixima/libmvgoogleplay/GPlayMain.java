@@ -21,10 +21,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -33,6 +34,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.games.Games;
@@ -60,6 +63,8 @@ public class GPlayMain {
 
     public GPlayMain(@NonNull Context context, @NonNull WebView webView) {
         mParentActivity = ((Activity) context);
+
+        if (!isGooglePlayServicesAvailable(mParentActivity)) return;
 
         Resources res = mParentActivity.getResources();
 
@@ -120,12 +125,14 @@ public class GPlayMain {
     }
 
     public void onResume() {
+        if (!isGooglePlayServicesAvailable(mParentActivity)) return;
         if (!manualSignOut && enable_auto_signin) {
             startSilentSignIn();
         }
     }
 
     public void onStart() {
+        if (!isGooglePlayServicesAvailable(mParentActivity)) return;
         if (!manualSignOut && enable_auto_signin) {
             startInteractiveSignIn();
         }
@@ -151,6 +158,18 @@ public class GPlayMain {
     @JavascriptInterface
     public boolean isSignedIn() {
         return GoogleSignIn.getLastSignedInAccount(mParentActivity) != null;
+    }
+
+    private boolean isGooglePlayServicesAvailable(Activity activity) {
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int status = googleApiAvailability.isGooglePlayServicesAvailable(activity);
+        if (status != ConnectionResult.SUCCESS) {
+            if (googleApiAvailability.isUserResolvableError(status)) {
+                googleApiAvailability.getErrorDialog(activity, status, 2404).show();
+            }
+            return false;
+        }
+        return true;
     }
 
     private void startSilentSignIn() {

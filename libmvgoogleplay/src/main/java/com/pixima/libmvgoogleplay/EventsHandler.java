@@ -18,8 +18,9 @@ package com.pixima.libmvgoogleplay;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.webkit.JavascriptInterface;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.games.EventsClient;
 import com.google.android.gms.games.event.Event;
