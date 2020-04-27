@@ -2,6 +2,7 @@
 *.ps1
 .gradle
 /local.properties
+/bintray-script.gradle
 /bintray.properties
 /.idea/caches
 /.idea/libraries

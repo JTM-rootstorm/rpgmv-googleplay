@@ -14,7 +14,11 @@
    limitations under the License.
 */
 
-apply plugin: 'com.android.library'
+plugins {
+    id "com.jfrog.bintray" version "1.8.5"
+    id "com.github.dcendents.android-maven" version "2.1"
+    id "com.android.library"
+}
 
 android {
     compileSdkVersion 29
@@ -39,7 +43,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    api 'androidx.appcompat:appcompat:1.1.0'
 
     implementation ('com.google.android.gms:play-services-games:19.0.0') {
         exclude group: 'com.android.support'
@@ -51,4 +55,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 }
 
-apply from: '../bintray-script.gradle'
+if (getGradle().getStartParameter().getTaskRequests().toString().contains("bintrayUpload")) {
+    apply from: '../bintray-script.gradle'
+}
