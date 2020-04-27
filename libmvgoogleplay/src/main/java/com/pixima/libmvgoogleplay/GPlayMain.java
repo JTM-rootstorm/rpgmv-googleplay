@@ -163,6 +163,7 @@ public class GPlayMain {
         return GoogleSignIn.getLastSignedInAccount(mParentActivity) != null;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isGooglePlayServicesAvailable(Activity activity) {
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
         int status = googleApiAvailability.isGooglePlayServicesAvailable(activity);

@@ -30,7 +30,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    buildToolsVersion '29.0.2'
+    buildToolsVersion '29.0.3'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -41,14 +41,14 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.1.0'
 
-    implementation ('com.google.android.gms:play-services-games:18.0.0') {
+    implementation ('com.google.android.gms:play-services-games:19.0.0') {
         exclude group: 'com.android.support'
     }
-    implementation ('com.google.android.gms:play-services-auth:17.0.0') {
+    implementation ('com.google.android.gms:play-services-auth:18.0.0') {
         exclude group: 'com.android.support'
     }
 
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.6'
 }
 
 apply from: '../bintray-script.gradle'
